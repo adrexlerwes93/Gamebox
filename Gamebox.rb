@@ -15,8 +15,18 @@ ensure
   return input
 end
 
+#moves terminal cursor to overwrite old input
+def overwrite(lines)
+  count = 0
+  while count < lines
+    count += 1
+    system "printf \"\\033[1A\"  # move cursor one line up"
+    #system "printf \"\\033[K\"   # delete till end of line"
+  end
+end
+
 def menu(int)
-  system "clear"
+  linesPrinted = 10
   totalOptions = 7
   #puts ".....  .....  .   .  ....."
   #puts ".      .   .  .. ..  .    "
@@ -89,7 +99,9 @@ def menu(int)
     puts "  Play Guess The Word"
     puts "\n* Quit"
   end
-  case read_char
+  input = read_char
+  overwrite(linesPrinted)
+  case input
   when "\e[C" #right character
     menu((int+1)%totalOptions)
   when "\e[B" #down character
@@ -101,22 +113,22 @@ def menu(int)
   when "\r"
     case int
     when 1
-      system "ruby 2048.rb"
+      system "ruby games/2048.rb"
       menu(1)
     when 2
-      system "ruby dots.rb"
+      system "ruby games/dots.rb"
       menu(2)
     when 3
-      system "ruby blockMan.rb"
+      system "ruby games/blockMan.rb"
       menu(3)
     when 4
-      system "ruby pegs.rb"
+      system "ruby games/pegs.rb"
       menu(4)
     when 5
-      system "ruby TicTacToe.rb"
+      system "ruby games/TicTacToe.rb"
       menu(5)
     when 6
-      system "ruby guessTheWord.rb"
+      system "ruby games/guessTheWord.rb"
       menu(6)
     when 0
       system "clear"
@@ -129,6 +141,6 @@ def menu(int)
     menu(int)
   end
 end
-
+#puts "\n\n\n\n\n\n\n\n\n\n" #10 times
 menu(1)
 

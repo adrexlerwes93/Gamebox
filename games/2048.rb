@@ -15,6 +15,16 @@ ensure
   	return input
 end
 
+#moves terminal cursor to overwrite old input
+def overwrite(lines)
+  count = 0
+  while count < lines
+    count += 1
+    system "printf \"\\033[1A\"  # move cursor one line up"
+    #system "printf \"\\033[K\"   # delete till end of line"
+  end
+end
+
 #create the initual 4X4 board with all zeros
 def createBoard
 	board = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
@@ -387,7 +397,8 @@ end
 
 #runs the game
 def play2048
-	system "clear"
+	linesPrinted = 10
+	#system "clear"
 	board = createBoard
 	while playable(board)
 		printBoard(board)
@@ -395,14 +406,15 @@ def play2048
 		winner?(board)
 		slide(board)
 		addVal(board)
-		system "clear"
+		overwrite(linesPrinted)
 	end
 	printBoard(board)
 	puts "YOU LOSE!"
+	linesPrinted += 2
 	if playAgain
 		play2048
 	end
-	system "clear"
+	overwrite(linesPrinted)
 end
 
 ##########################################
