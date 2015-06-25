@@ -47,7 +47,6 @@ def menu(int)
   puts ""
   if int==0 then print "*" else print " " end
   puts " Quit"
-
   case read_char
   when "\e[C" #right character
     overwrite($linesPrinted, false)
@@ -83,6 +82,8 @@ def menu(int)
   when "\u0003"
     overwrite($linesPrinted, true)#system "clear"
     exit 0
+  else
+    overwrite($linesPrinted, false)
   end
   menu(int)
 end

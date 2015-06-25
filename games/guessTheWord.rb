@@ -1,3 +1,15 @@
+#moves terminal cursor to overwrite old input
+def overwrite(lines, delete)
+  if delete
+    lines.times do
+      system "printf \"\\033[1A\""
+      system "printf \"\\033[K\""
+    end
+  else
+    system "printf \"\\033[#{lines}A\""  # move cursor n lines up
+  end
+end
+
 def selectWord
 	words = [
 		"anvil",
@@ -42,6 +54,7 @@ def printSimilarities(guess,word)
 	end
 	puts ""
 	print "---------  "
+	$linesPrinted += 3
 end
 
 def findMatch(char,word)
@@ -59,10 +72,11 @@ def takeGuess
 		return guess
 	else
 		if guess.downcase == "quit"
-			system "clear"
+			overwrite($linesPrinted, true)
 			exit 0
 		end
 		puts "Word must have 5 characters"
+		$linesPrinted += 2
 		takeGuess
 	end
 end
@@ -83,31 +97,33 @@ def playAgain
 	elsif response == "n" || response == "no"
 		return false
 	else
+		overwrite(2,true)
 		puts "Invalid input. Please respond with y or n."
 		playAgain
 	end
 end
 
 def playGuess
-	system "clear"
-	puts "\n All words are 5 letters, and each letter is used only once."
+	puts "All words are 5 letters, and each letter is used only once."
 	puts "  Make a guess!  "
 	puts "_ _ _ _ _       (type \"quit\" to quit the game)"
 	print "---------  "
 	word = selectWord
 	guess = ""
 	guesses = 0
+	$linesPrinted = 4
 	while !won(guess,word)
 		guess = takeGuess
 		printSimilarities(guess,word)
-		guesses = guesses + 1
+		guesses += 1
 	end
 	puts ""
 	puts "CORRECT! You found the word with #{guesses} guesses."
 	if playAgain
+		overwrite($linesPrinted+3,true)
 		playGuess
 	end
-	system "clear"
+	overwrite($linesPrinted+3, true)
 end
 
 playGuess

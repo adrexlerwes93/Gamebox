@@ -149,9 +149,11 @@ def move(stage,level)
     	overwrite($linePrinted, true)
     	exit 0
     when "r"
+    	overwrite($linePrinted, true)
    		playBlockMan(level)
    	when "s"
    		number = read_char
+   		overwrite($linePrinted, true)
    		playBlockMan(number.to_i)
   	else
   		
@@ -364,7 +366,6 @@ end
 def playBlockMan(level)
 	maxLevel = 3
 	$linePrinted = 11
-	#system "clear"
 	while level <= maxLevel
 		stage = setMap(level)
 		while stage[1] != stage[4]
@@ -376,10 +377,9 @@ def playBlockMan(level)
 		printMap(stage)
 		whatNext(level)
 	end
-	overwrite($linePrinted,true)
 	puts "\nYou've completed the game!!!!!\n You're a true Block Man master!"
 	read_char
-	overwrite(2,true)
+	overwrite(3,true)
 	exit 0
 end
 
