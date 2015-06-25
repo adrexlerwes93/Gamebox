@@ -15,6 +15,18 @@ ensure
   return input
 end
 
+#moves terminal cursor to overwrite old input
+def overwrite(lines, delete)
+  if delete
+    lines.times do # delete one line at a time moving up n times
+      system "printf \"\\033[1A\""
+      system "printf \"\\033[K\""
+    end
+  else
+    system "printf \"\\033[#{lines}A\""  # move cursor n lines up
+  end
+end
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #determines initial stage based on level number
 def setMap(level)
@@ -134,7 +146,7 @@ def move(stage,level)
   			return moveBlock(stage)
   		end
   	when "\u0003"
-    	system "clear"
+    	overwrite($linePrinted, true)
     	exit 0
     when "r"
    		playBlockMan(level)
@@ -336,11 +348,13 @@ def whatNext(level)
 	puts "You win! Play next level? (y/n)"
 	case read_char
 	when "n"
-		system "clear"
+		overwrite($linePrinted, true)
 		exit 0
 	when "y"
+		overwrite($linePrinted, true)
 		playBlockMan(level+1)
 	else
+		overwrite(1, true)
 		whatNext(level)
 	end
 end
@@ -349,22 +363,23 @@ end
 #run game
 def playBlockMan(level)
 	maxLevel = 3
-	system "clear"
+	$linePrinted = 11
+	#system "clear"
 	while level <= maxLevel
 		stage = setMap(level)
 		while stage[1] != stage[4]
 			printMap(stage)
 			puts "(ctr-c) to quit"
 			stage = move(stage,level)
-			system "clear"
+			overwrite($linePrinted,false)
 		end
 		printMap(stage)
 		whatNext(level)
 	end
-	system "clear"
+	overwrite($linePrinted,true)
 	puts "\nYou've completed the game!!!!!\n You're a true Block Man master!"
 	read_char
-	system "clear"
+	overwrite(2,true)
 	exit 0
 end
 
