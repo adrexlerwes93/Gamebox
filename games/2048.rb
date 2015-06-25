@@ -1,5 +1,7 @@
 require 'io/console'
 
+#lines printed = 10 (usually)
+
 #reads single input from terminal
 def read_char
 	STDIN.echo = false
@@ -16,12 +18,14 @@ ensure
 end
 
 #moves terminal cursor to overwrite old input
-def overwrite(lines)
-  count = 0
-  while count < lines
-    count += 1
-    system "printf \"\\033[1A\"  # move cursor one line up"
-    #system "printf \"\\033[K\"   # delete till end of line"
+def overwrite(lines, delete)
+  if delete
+    lines.times do
+      system "printf \"\\033[1A\""
+      system "printf \"\\033[K\""
+    end
+  else
+    system "printf \"\\033[#{lines}A\""  # move cursor n lines up
   end
 end
 
@@ -206,7 +210,7 @@ def slide(board)
     	else slide(board)
     	end
     when "\u0003"
-    	system "clear"
+    	overwrite($linesPrinted,true)
     	exit 0
     else slide(board)
     end
@@ -366,11 +370,13 @@ end
 def playAgain
 	puts "Want to play again? (y/n)"
 	response = gets.chomp.downcase
+	overwrite(2,true)
 	if response == "y" || response == "yes"
 		return true
 	elsif response == "n" || response == "no"
 		return false
 	else
+		overwrite(1,true)
 		puts "Invalid input. Please respond with y or n."
 		playAgain
 	end
@@ -397,8 +403,7 @@ end
 
 #runs the game
 def play2048
-	linesPrinted = 10
-	#system "clear"
+	$linesPrinted = 10
 	board = createBoard
 	while playable(board)
 		printBoard(board)
@@ -406,15 +411,16 @@ def play2048
 		winner?(board)
 		slide(board)
 		addVal(board)
-		overwrite(linesPrinted)
+		overwrite($linesPrinted, false)
 	end
 	printBoard(board)
+	system "printf \"\\033[K\""
 	puts "YOU LOSE!"
-	linesPrinted += 2
 	if playAgain
+		overwrite($linesPrinted, true)
 		play2048
 	end
-	overwrite(linesPrinted)
+	overwrite($linesPrinted, true)
 end
 
 ##########################################
