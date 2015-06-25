@@ -1,3 +1,5 @@
+#TODO: Add restart game option!
+
 require 'io/console'
 
 #reads single input from terminal
@@ -13,6 +15,18 @@ ensure
   STDIN.echo = true
   STDIN.cooked!
   return input
+end
+
+#moves terminal cursor to overwrite old input
+def overwrite(lines, delete)
+  if delete
+    lines.times do
+      system "printf \"\\033[1A\""
+      system "printf \"\\033[K\""
+    end
+  else
+    system "printf \"\\033[#{lines}A\""  # move cursor n lines up
+  end
 end
 
 def createGame
@@ -148,7 +162,7 @@ def moveSquare(game)
     #return key
     return deleteAndDrop(game)
   else 
-    system "clear"
+    overwrite($linesPrinted, true)
     exit 0
   end
   return moveSquare(game)
@@ -228,7 +242,7 @@ def moveSelection(game)
     end
     return [board,cursor,[],0,game[4],game[5]]
   else
-    system "clear"
+    overwrite($linesPrinted, true)  
     exit 0
   end
   return moveSelection(game)
@@ -268,7 +282,7 @@ def moveCursor(game)
     selected << cursor
     return [board,cursor,selected,0,game[4],game[5]]
   else
-    system "clear"
+    overwrite($linesPrinted, true)
     exit 0
   end
   return moveCursor(game)
@@ -352,21 +366,28 @@ def fillTop(game)
   return game
 end
 
-game = createGame
-
-while game[4] != 0
-  system "clear"
+def playDots
+  $linesPrinted = 14
+  game = createGame
+  while game[4] != 0
+    if game[4] < 10
+      puts "Turns left: 0#{game[4]}"
+    else
+      puts "Turns left: #{game[4]}"
+    end
+    puts "Score: #{game[5]}"
+    printBoard(game)
+    game = move(game)
+    overwrite($linesPrinted, false)
+  end
   puts "Turns left: #{game[4]}"
   puts "Score: #{game[5]}"
   printBoard(game)
-  game = move(game)
+  puts "Game Over!"
+  puts "Your score: #{game[5]}"
+  read_char
+  overwrite($linesPrinted+2,true)
+  exit 0
 end
-system "clear"
-puts "Turns left: #{game[4]}"
-puts "Score: #{game[5]}"
-printBoard(game)
-puts "Game Over!"
-puts "Your score: #{game[5]}"
-read_char
-system "clear"
-exit 0
+
+playDots
