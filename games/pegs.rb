@@ -15,9 +15,21 @@ ensure
   	return input
 end
 
+#moves terminal cursor to overwrite old input
+def overwrite(lines, delete)
+  if delete
+    lines.times do
+      system "printf \"\\033[1A\""
+      system "printf \"\\033[K\""
+    end
+  else
+    system "printf \"\\033[#{lines}A\""  # move cursor n lines up
+  end
+end
+
 def createBoard(level)
 	case level #select the board for the current level
-	when 1
+	when 1 #13
 		return [[0,0,0,0,0,0,0,0,0],
 				[0,0,0,0,0,0,0,0,0],
 				[0,0,0,0,0,0,2,0,0],
@@ -27,7 +39,7 @@ def createBoard(level)
 				[0,3,0,0,0,0,0,0,0],
 				[0,2,0,0,0,0,0,0,0],
 				[0,0,0,0,0,0,0,0,0]]
-	when 2
+	when 2 #13
 		return [[0,1,0],
 				[2,3,4],
 				[0,0,0],
@@ -37,19 +49,19 @@ def createBoard(level)
 				[0,0,0],
 				[3,3,2],
 				[0,0,4]]
-	when 3
+	when 3 #8
 		return [[1,0,2,2],
 				[2,3,4,4],
 				[4,3,3,4],
 				[2,2,2,3]]
-	when 4
+	when 4 #10
 		return [[0,0,0,0,0,0,2],
 				[0,0,3,4,4,0,0],
 				[2,0,4,4,3,0,0],
 				[2,0,0,2,0,0,3],
 				[0,0,0,3,0,0,0],
 				[0,3,3,1,3,3,0]]
-	when 5
+	when 5 #8
 		return [[4,4,0,0,3,0,0,0,0,3,4,4,2,0,4],
 				[2,1,0,0,0,2,0,4,0,0,0,0,0,0,0],
 				[3,0,0,0,0,0,0,3,0,2,2,4,2,3,0],
@@ -120,12 +132,13 @@ def move(board,level)
   		#left character
   		moveLeft(board)
     when "\u0003"
-    	system "clear"
+    	overwrite($linesPrinted, true)
     	exit 0
     when "r"
    		playPegs(level)
    	when "s"
    		number = read_char
+   		overwrite($linesPrinted, true)
    		playPegs(number.to_i)
     else 
     	move(board,level)
@@ -269,41 +282,43 @@ end
 def whatNext(state,level)
 	case read_char
 	when "n"
-		system "clear"
+		overwrite($linesPrinted, true)
 		exit 0
 	when "y"
+		overwrite($linesPrinted, true)
 		if state == "w"
 			playPegs(level+1)
 		elsif state == "l"
 			playPegs(level)
 		end
 	else
+		overwrite(1,true)
 		whatNext(state,level)
 	end
 end
 
 def playPegs(level)
 	maxLevel = 5
+	$linesPrinted = 0
 	while level <= maxLevel
 		board = createBoard(level)
+		$linesPrinted = board.length + 4
 		while board[0][0] != "w" && board[0][0] != "l"
-			system "clear"
 			puts "Level #{level}"
 			printBoard(board)
 			puts "(ctr-c) to quit"
 			move(board,level)
 			win?(board)
+			overwrite($linesPrinted,false)
 		end
-		system "clear"
 		puts "Level #{level}"
 		printBoard(board)
 		puts board[1][0]
 		whatNext(board[0][0],level)
 	end
-	system "clear"
 	puts "\nYou've completed the game!!!!!\n You're a true PEGS master!"
 	read_char
-	system "clear"
+	overwrite(3,true)
 	exit 0
 end
 

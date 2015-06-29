@@ -15,6 +15,18 @@ ensure
   return input
 end
 
+#moves terminal cursor to overwrite old input
+def overwrite(lines, delete)
+  if delete
+    lines.times do
+      system "printf \"\\033[1A\""
+      system "printf \"\\033[K\""
+    end
+  else
+    system "printf \"\\033[#{lines}A\""  # move cursor n lines up
+  end
+end
+
 def newGame
   game = Hash["board" => [[-1,0,0],[0,0,0],[0,0,0]], "player" => 1]
   return game
@@ -64,7 +76,7 @@ def move(game)
   when "\r"
     place(game)
   when "\u0003"
-    system "clear"
+    overwrite($linesPrinted,false)
     exit 0
   else move(game)
   end
@@ -228,25 +240,28 @@ def whatNext
   puts "Want to play again? (y/n)"
   case read_char
   when "n"
-    system "clear"
+    overwrite($linesPrinted,true)
     exit 0
   when "y"
+    overwrite($linesPrinted,true)
     playTicTacToe
   else
+    overwrite(1,true)
     whatNext
   end
 end
 
 def playTicTacToe
+  $linesPrinted = 8
   game = newGame
   while !winner(game) & !spacesUsed(game)
-    system "clear"
     puts "Player #{game["player"]}'s turn!"
     printBoard(game)
     puts "(ctr-c) to quit"
     move(game)
+    overwrite($linesPrinted-1,false)
+    overwrite(1,true)
   end
-  system "clear"
   if winner(game)
     winnerNumber = (game["player"]%2)+1
     puts "Player #{winnerNumber} wins!"

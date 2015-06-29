@@ -97,7 +97,7 @@ def playAgain
 	elsif response == "n" || response == "no"
 		return false
 	else
-		overwrite(2,true)
+		overwrite(3,true)
 		puts "Invalid input. Please respond with y or n."
 		playAgain
 	end

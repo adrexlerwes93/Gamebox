@@ -1,7 +1,6 @@
 File.open('scores.txt', 'r+') do |file|
-	puts file.
+	puts file
 end
-
 
 #File.open('testWrite.txt', 'w') do |file|
 #	file.puts "Hello Catherine!"
