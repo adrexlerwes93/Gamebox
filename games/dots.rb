@@ -1,5 +1,3 @@
-#TODO: Add restart game option!
-
 require 'io/console'
 
 #reads single input from terminal
@@ -29,6 +27,13 @@ def overwrite(lines, delete)
   end
 end
 
+#Creates game object
+#game[0] = board
+#game[1] = cursor location
+#game[2] = list of selected symbols
+#game[3] =
+#game[4] = turns left
+#game[5] = score
 def createGame
   board = [0,0,0,0,0,0,0,0,0,0],
           [0,0,0,0,0,0,0,0,0,0],
@@ -102,6 +107,7 @@ def printBoard(game)
   puts " ------------------------------ "
 end
 
+#Determines if symbol at (i,j) has already been selected.
 def inSelection(selected,i,j)
   selected.each do |k|
     if k[0] == i && k[1] == j
@@ -123,6 +129,8 @@ def move(game)
   end
 end
 
+#Takes input when a square has been formed in selection.
+# Can only move back to previous selection or remove.
 def moveSquare(game)
   board = game[0]
   cursor = game[1]
@@ -168,6 +176,9 @@ def moveSquare(game)
   return moveSquare(game)
 end
 
+#Move cursor and update selection if selection is currently being made
+# but no square has been made.
+# Can move in any direction that has the same symbol as current selection or delete.
 def moveSelection(game)
   board = game[0]
   cursor = game[1]
@@ -248,6 +259,8 @@ def moveSelection(game)
   return moveSelection(game)
 end
 
+#Movement when no selection has been made. 
+# Can move in any direction but can't delete, only select.
 def moveCursor(game)
   board = game[0]
   cursor = game[1]
@@ -288,6 +301,7 @@ def moveCursor(game)
   return moveCursor(game)
 end
 
+#Determines which symbols to delete, then shifts all remaining symbols down.
 def deleteAndDrop(game)
   if game[3] == 1
     game = removeAll(game)
@@ -302,6 +316,7 @@ def deleteAndDrop(game)
   return game
 end
 
+#Removes all of a type of symbol from the board.
 def removeAll(game)
   board = game[0]
   selected = game[2]
@@ -321,6 +336,7 @@ def removeAll(game)
   return [board,game[1],[],0,game[4],game[5]+count]
 end
 
+#Removes only selected symbols from board.
 def removeSelected(game)
   count = 0
   game[2].each do |k|
@@ -333,6 +349,7 @@ def removeSelected(game)
   return game
 end
 
+#Determines if the board has an empty space.
 def hasEmpty(game)
   (0..9).each do |i|
     (0..9).each do |j|
@@ -344,6 +361,7 @@ def hasEmpty(game)
   return false
 end
 
+#Slides all symbols down as far as possible.
 def dropRow(game)
   board = game[0]
   (0..8).each do |i|
@@ -357,6 +375,7 @@ def dropRow(game)
   return [board,game[1],[],0,game[4],game[5]]
 end
 
+#Fills empty spaces at top of board with new symbols.
 def fillTop(game)
   (0..9).each do |j|
     if game[0][0][j] == 0
@@ -364,6 +383,22 @@ def fillTop(game)
     end
   end
   return game
+end
+
+#provides option to start over after a loss
+def playAgain
+  puts "Want to play again? (y/n)"
+  response = gets.chomp.downcase
+  overwrite(2,true)
+  if response == "y" || response == "yes"
+    return true
+  elsif response == "n" || response == "no"
+    return false
+  else
+    overwrite(1,true)
+    puts "Invalid input. Please respond with y or n."
+    playAgain
+  end
 end
 
 def playDots
@@ -385,9 +420,13 @@ def playDots
   printBoard(game)
   puts "Game Over!"
   puts "Your score: #{game[5]}"
-  read_char
-  overwrite($linesPrinted+2,true)
-  exit 0
+  if playAgain
+    overwrite($linesPrinted+2,true)
+    playDots
+  else
+    overwrite($linesPrinted+2,true)
+    exit 0
+  end
 end
 
 playDots

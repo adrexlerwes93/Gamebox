@@ -10,6 +10,7 @@ def overwrite(lines, delete)
   end
 end
 
+#Returns a word from the words list.
 def selectWord
 	words = [
 		"anvil",
@@ -35,11 +36,13 @@ def selectWord
 		"until",
 		"viola",
 		"water",
-		"young"
+		"young",
+		"zebra"
 	]
 	return words[Random.rand(words.length)]
 end
 
+#Prints guessed word along with which letters are correct or contained in solution.
 def printSimilarities(guess,word)
 	(0..4).each do |i|
 		print "#{guess[i].upcase} "
@@ -57,6 +60,7 @@ def printSimilarities(guess,word)
 	$linesPrinted += 3
 end
 
+#Determines if a letter is contained in solution word.
 def findMatch(char,word)
 	(0..4).each do |j|
 		if char.upcase == word[j].upcase
@@ -66,6 +70,7 @@ def findMatch(char,word)
 	return "X "
 end
 
+#Ask user for new guess word.
 def takeGuess
 	guess = gets.chomp
 	if guess.length == 5

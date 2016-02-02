@@ -1,10 +1,12 @@
 def timeEverySecond
 	while true
-		system "clear"
 		oldTime = Time.now.strftime("%S")
 		puts Time.now.strftime("%I:%M %S %p")
 		until Time.now.strftime("%S") != oldTime
+			wait 30
 		end
+		system "printf \"\\033[1A\""
+      	system "printf \"\\033[K\""
 	end
 end
 
@@ -14,10 +16,8 @@ def timeAllTheTime
 	end
 end
 
-def 
-
 ###############################################################################
 
-#timeEverySecond
+timeEverySecond
 
 #timeAllTheTime
