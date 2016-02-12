@@ -1,3 +1,5 @@
+#not currently used.
+
 class LetterMonster
 	def initialize(letter, type, sound)
 		@letter = letter

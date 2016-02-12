@@ -1,18 +1,20 @@
 class MapGenerator
 
-	def generate(id,width,height,border)
-		@width=width
-		@height = height
-		@array = Array.new(height){Array.new(width,border)}
-		@digger = {x: width/2, y: height/2, count: 1}
+	def generate(id,span,dir,border)
+		@width=5*span
+		@height =5*span
+		@count = span*span/2
+		@array = Array.new(@height){Array.new(@width,border)}
+		@digger = {x: @width/2, y: @height/2, count: 1}
 		dig
-		addPortal(id)
+		trim_array
+		addPortal(id,dir)
 		return @array
 	end
 
 	def dig
 		@array[@digger[:y]][@digger[:x]] = 0
-		while @digger[:count] < @width*@height/2
+		while @digger[:count] < @count
 			move(Random.rand(4))
 		end
 	end
@@ -54,7 +56,62 @@ class MapGenerator
 		end
 	end
 
-	def addPortal(id)
+	def trim_array
+		yStart, yEnd, xStart, xEnd = Array.new(4,-1)
+		for y in (0...@array.length)
+			hasZero = false
+			for x in (0...@array[0].length)
+				if !hasZero
+					if @array[y][x] == 0
+						hasZero = true
+						if yStart < 0
+							yStart = y
+						end
+					end
+				end
+			end
+			if yStart>=0 && yEnd<0 && !hasZero
+				yEnd = y-1
+			end
+		end
+		if yStart < 0
+			yStart = 0
+		end
+		if yEnd < 0
+			yEnd = @array.length-1
+		end
+		for x in (0...@array[0].length)
+			hasZero = false
+			for y in (0...@array.length)
+				if !hasZero
+					if @array[y][x] == 0
+						hasZero = true
+						if xStart < 0
+							xStart = x
+						end
+					end
+				end
+			end
+			if xStart>=0 && xEnd<0 && !hasZero
+				xEnd = x-1
+			end
+		end
+		if xStart < 0
+			xStart = 0
+		end
+		if xEnd < 0
+			xEnd = @array[0].length-1
+		end
+		tempArray = @array
+		@array = Array.new(yEnd-yStart+1){Array.new(xEnd-xStart+1)}
+		for y in (0...@array.length)
+			for x in (0...@array[0].length)
+				@array[y][x] = tempArray[yStart+y][xStart+x]
+			end
+		end
+	end
+
+	def addRandomPortal(id)
 		looking = true
 		while looking
 			x,y = [Random.rand(@width),Random.rand(@height)]
@@ -65,7 +122,55 @@ class MapGenerator
 		end
 	end
 
+	def addPortal(id,dir)
+		placed = false
+		case dir 
+		when 0
+			pX=0
+			for y in (0...@array.length)
+				if !placed && @array[y][0] == 0
+					@array[y][0] = id
+					placed = true
+				end
+			end
+		when 1
+			for x in (0...@array[0].length)
+				if !placed && @array[0][x] == 0
+					@array[0][x] = id
+					placed = true
+				end
+			end
+		when 2
+			for y in (0...@array.length)
+				if !placed && @array[y][@array[0].length-1] == 0
+					@array[y][@array[0].length-1] = id
+					placed = true
+				end
+			end
+		when 3
+			for x in (0...@array[0].length)
+				if !placed && @array[@array.length-1][x] == 0
+					@array[@array.length-1][x] = id
+					placed = true
+				end
+			end
+		end
+	end
 
+	def clean
+		@checked = Array.new(@array.length){Array.new(@array[0].length,false)}
+		for y in (0...@checked.length)
+			for x in (0...@checked[0].length)
+				if @array[y][x] != 0 && !@checked[y][x]
+					#TODO: Search areas that are not path and confirm that they are larger than X units.
+				end
+			end
+		end
+	end
+
+	def cleanDFS(x,y,cluster)
+		  
+	end
 
 	def print_map
 		@array.each do |row|

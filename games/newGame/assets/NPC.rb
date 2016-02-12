@@ -1,3 +1,5 @@
+#not currently used
+
 class NPC
 	def initialize(speech,letters)
 		@speech = speech
