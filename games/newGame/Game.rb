@@ -4,16 +4,15 @@ end
 
 class Game
 	def initialize
-		@p1 = Player.new("Player 1",$maps[-1],3,3,Input.new(2))
+		@p1 = Player.new("Player 1",Input.new(2))
 		@out = Output.new
-		@out.print_map($maps[-3])
 	end
 
 	def run
 		@out.start
 
 		while true
-			@out.print_view(@p1.get_map,@p1.get_x,@p1.get_y)
+			@out.print_view(@p1)
 			@p1.move
 		end
 	end
@@ -22,6 +21,11 @@ class Game
 		@out.overwrite($WINDOWSIZE,true)
 		exit 0
 	end
+end
+
+$SPACE = Array.new(11){Array.new(21,-1)}
+for i in 1..4
+	$WORLDS.push(World.new("World #{i}"))
 end
 
 $GAME = Game.new

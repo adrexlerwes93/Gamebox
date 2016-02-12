@@ -1,4 +1,7 @@
 class String
+	$STRING_COLORS=10
+	$BACKGROUND_COLORS=8
+	##http://misc.flogisoft.com/bash/tip_colors_and_formatting
 	def black;          "\e[30m#{self}\e[0m" end
 	def red;            "\e[31m#{self}\e[0m" end
 	def green;          "\e[32m#{self}\e[0m" end
@@ -7,6 +10,8 @@ class String
 	def magenta;        "\e[35m#{self}\e[0m" end
 	def cyan;           "\e[36m#{self}\e[0m" end
 	def gray;           "\e[37m#{self}\e[0m" end
+	def yellow;			"\e[93m#{self}\e[0m" end
+	def white;			"\e[97m#{self}\e[0m" end
 	#colorize background
 	def bg_black;       "\e[40m#{self}\e[0m" end
 	def bg_red;         "\e[41m#{self}\e[0m" end
@@ -22,17 +27,4 @@ class String
 	def underline;      "\e[4m#{self}\e[24m" end
 	def blink;          "\e[5m#{self}\e[25m" end
 	def reverse_color;  "\e[7m#{self}\e[27m" end
-
-	def color_by_type(type)
-		case type
-		when "water"
-			"\e[34m#{self}\e[0m"
-		when "fire"
-			"\e[31m#{self}\e[0m"
-		when "grass"
-			"\e[32m#{self}\e[0m"
-		else
-			"#{self}"
-		end
-	end
 end

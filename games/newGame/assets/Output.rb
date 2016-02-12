@@ -2,6 +2,19 @@ class Output
 
 	$WINDOWSIZE=13
 
+	@@PLANETS = {
+		-1=>'  ',
+		0=>'()'.white,
+		1=>'()'.red,
+		2=>'()'.green,
+		3=>'()'.brown,
+		4=>'()'.blue,
+		5=>'()'.magenta,
+		6=>'()'.cyan,
+		7=>'()'.gray,
+		8=>'()'.yellow
+	}
+
 	@@CHAR_KEY = {
 		#portal
 		-1=>'[]',
@@ -43,6 +56,14 @@ class Output
 		print @@CHAR_KEY[number]
 	end
 
+	def print_planet(number, bold)
+		if bold
+			print @@PLANETS[number].bg_black.bold.reverse_color
+		else
+			print @@PLANETS[number].bg_black
+		end
+	end
+
 	def print_map(map)
 		map.get_array.each do |row|
 			row.each do |number|
@@ -52,10 +73,17 @@ class Output
 		end
 	end
 
-	def print_view(map,x0,y0)
+	def print_view(player)
+		if player.is_onWorld
+			print_view_land(player.get_map,player.get_x,player.get_y)
+		else
+			print_view_space($WORLDS[player.get_world])
+		end
+	end
+
+	def print_view_land(map,x0,y0)
 		overwrite($WINDOWSIZE,false)
 		puts "+------------------------------------------+"
-
 		for y in (y0-5)..(y0+5)
 			print "|"
 			for x in (x0-10)..(x0+10)
@@ -70,6 +98,24 @@ class Output
 					else
 						print_char(map.get_array[y][x])
 					end
+				end
+			end
+			puts "|"
+		end
+		puts "+------------------------------------------+"
+	end
+
+	def print_view_space(world)
+		overwrite($WINDOWSIZE,false)
+		puts "+------------------------------------------+"
+		for y in 0..10
+			print "|"
+			for x in 0..20
+				val = $SPACE[y][x]
+				if x == world.get_x && y == world.get_y
+					print_planet(val,true)
+				else
+					print_planet(val,false)
 				end
 			end
 			puts "|"
