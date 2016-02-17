@@ -24,7 +24,8 @@ class World
 		$SPACE[@y][@x] = @planet
 		@mg = MapGenerator.new
 		for m in 3..6
-			@maps.push(Map.new( -3, 20, $mg.generate(-1,60,3,20)))
+			#@maps.push(Map.new( -3, 20, $mg.generate(-1,60,3,20)))
+			@maps.push(@mg.generate(-m,20,m-3,20))
 		end
 
 	end

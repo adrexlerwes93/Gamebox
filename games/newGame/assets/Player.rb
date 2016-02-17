@@ -27,7 +27,7 @@ class Player
 					else
 						new_id = @map.get_id_at(x,y)
 						prev_id = @map.get_id
-						@map = $WORLDS[@world].get_maps[new_id]
+						@map = $WORLDS[@world].get_maps[(0-new_id)-2]
 						@x, @y = @map.find_portal(prev_id)
 					end
 				end

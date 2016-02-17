@@ -8,8 +8,8 @@ class MapGenerator
 		@digger = {x: @width/2, y: @height/2, count: 1}
 		dig
 		trim_array
-		addPortal(id,dir)
-		return @array
+		addPortal(dir)
+		return Map.new(id,border,@array)
 	end
 
 	def dig
@@ -122,35 +122,35 @@ class MapGenerator
 		end
 	end
 
-	def addPortal(id,dir)
+	def addPortal(dir)
 		placed = false
 		case dir 
 		when 0
 			pX=0
 			for y in (0...@array.length)
 				if !placed && @array[y][0] == 0
-					@array[y][0] = id
+					@array[y][0] = -2
 					placed = true
 				end
 			end
 		when 1
 			for x in (0...@array[0].length)
 				if !placed && @array[0][x] == 0
-					@array[0][x] = id
+					@array[0][x] = -2
 					placed = true
 				end
 			end
 		when 2
 			for y in (0...@array.length)
 				if !placed && @array[y][@array[0].length-1] == 0
-					@array[y][@array[0].length-1] = id
+					@array[y][@array[0].length-1] = -2
 					placed = true
 				end
 			end
 		when 3
 			for x in (0...@array[0].length)
 				if !placed && @array[@array.length-1][x] == 0
-					@array[@array.length-1][x] = id
+					@array[@array.length-1][x] = -2
 					placed = true
 				end
 			end
