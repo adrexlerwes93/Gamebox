@@ -1,5 +1,6 @@
 class MapGenerator
 
+	#Returns a randomly generated map.
 	def generate(id,span,dir,border)
 		@width=5*span
 		@height =5*span
@@ -12,13 +13,15 @@ class MapGenerator
 		return Map.new(id,border,@array)
 	end
 
+	#Called by generate. Creates walkable path until count has been reached.
 	def dig
 		@array[@digger[:y]][@digger[:x]] = 0
 		while @digger[:count] < @count
-			move(Random.rand(4))
+			move($RAND.rand(4))
 		end
 	end
 
+	#Called by dig. Randomly selects undug area to dig.
 	def move(dir)
 		case dir 
 		when 0
@@ -56,6 +59,7 @@ class MapGenerator
 		end
 	end
 
+	#Called by generate. Resizes array to necessary dimensions after dig.
 	def trim_array
 		yStart, yEnd, xStart, xEnd = Array.new(4,-1)
 		for y in (0...@array.length)
@@ -111,10 +115,11 @@ class MapGenerator
 		end
 	end
 
+	#NOT CURRENTLY USED. Randomly adds a portal with specified id to map.
 	def addRandomPortal(id)
 		looking = true
 		while looking
-			x,y = [Random.rand(@width),Random.rand(@height)]
+			x,y = [$RAND.rand(@width),$RAND.rand(@height)]
 			if @array[y][x] == 0
 				@array[y][x] = id
 				looking = false
@@ -122,6 +127,7 @@ class MapGenerator
 		end
 	end
 
+	#Called by generate. Adds a portal to central hub of world, along specified edge.
 	def addPortal(dir)
 		placed = false
 		case dir 
@@ -157,6 +163,7 @@ class MapGenerator
 		end
 	end
 
+	#TODO
 	def clean
 		@checked = Array.new(@array.length){Array.new(@array[0].length,false)}
 		for y in (0...@checked.length)
@@ -168,10 +175,12 @@ class MapGenerator
 		end
 	end
 
+	#TODO
 	def cleanDFS(x,y,cluster)
 		  
 	end
 
+	#NOT CURRENTLY USED. Prints map as 0's and 1's.
 	def print_map
 		@array.each do |row|
 			row.each do |cell|

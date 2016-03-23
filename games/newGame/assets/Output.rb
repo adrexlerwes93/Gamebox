@@ -31,6 +31,15 @@ class Output
 		20=>'tt'.green,
 		#water
 		30=>'wW'.blue,
+		#ship
+		40=>'HH'.black,
+		41=>'/H'.black,
+		42=>'H\\'.black,
+		43=>'/\\'.black,
+		44=>'()'.black,
+		45=>' /'.black,
+		46=>'\\ '.black,
+		47=>'HH'.red,
 		#walls
 		100=>'  '.bg_black
 	}
@@ -52,8 +61,12 @@ class Output
 		$WINDOWSIZE.times do puts end
 	end
 
-	def print_char(number)
-		print @@CHAR_KEY[number]
+	def print_char(number,gray)
+		out = @@CHAR_KEY[number]
+		if gray && number<=1
+			out = out.bg_gray
+		end
+		print out
 	end
 
 	def print_planet(number, bold)
@@ -67,7 +80,7 @@ class Output
 	def print_map(map)
 		map.get_array.each do |row|
 			row.each do |number|
-				print_char(number)
+				print_char(number,true)
 			end
 			puts
 		end
@@ -87,16 +100,17 @@ class Output
 		for y in (y0-5)..(y0+5)
 			print "|"
 			for x in (x0-10)..(x0+10)
+				gray = ((y+x)%2 == 0)
 				if(x<0 || x>map.get_xBound || y<0 || y>map.get_yBound)
-					print_char(map.get_border)
+					print_char(map.get_border,gray)
 				elsif(x==x0 && y==y0)
-					print_char(1)
+					print_char(1,gray)
 				else
 					val = map.get_array[y][x]
 					if val < 0
-						print_char(-1)
+						print_char(-1,gray)
 					else
-						print_char(map.get_array[y][x])
+						print_char(map.get_array[y][x],gray)
 					end
 				end
 			end

@@ -1,19 +1,21 @@
 class Player
 	def initialize(name,input)
-		@name = name
-		@input = input
-		@world = 0
-		@onWorld = false
-		@map = nil
-		@x = nil
-		@y = nil
+		@name = name		
+		@input = input		
+		@world = 0 		
+		@onWorld = false	
+		@map = nil			
+		@x = nil			
+		@y = nil			
 	end
 
-	def get_world;	@world 		end
-	def is_onWorld; @onWorld 	end
-	def get_map;	@map 		end
-	def get_x; 		@x 			end
-	def get_y; 		@y 			end
+	def get_name;	@name 		end	#str. Name of player.
+	def get_input;	@input 		end	#input. Type of input.
+	def get_world;	@world 		end	#int. Index of world currently occupied by player in $WORLDS array.
+	def is_onWorld; @onWorld 	end #bool. Whether player is currently on a planet, else in space.
+	def get_map;	@map 		end #map. The current map occupied by player.
+	def get_x; 		@x 			end	#int. X pos on map.
+	def get_y; 		@y 			end #int. Y pos on map.
 
 	def move
 		if @onWorld

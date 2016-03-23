@@ -15,16 +15,13 @@ class World
 
 	def initialize(name)
 		@id = $WORLDS.length
-		@seed = Random.new_seed
-		@rand = Random.new(@seed)
-		@x = @rand.rand(21)
-		@y = @rand.rand(11)
-		@planet = @rand.rand(9)
+		@x = $RAND.rand(21)
+		@y = $RAND.rand(11)
+		@planet = $RAND.rand(9)
 		@maps = [$maps[-2]]
 		$SPACE[@y][@x] = @planet
 		@mg = MapGenerator.new
 		for m in 3..6
-			#@maps.push(Map.new( -3, 20, $mg.generate(-1,60,3,20)))
 			@maps.push(@mg.generate(-m,20,m-3,20))
 		end
 

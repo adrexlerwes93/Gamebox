@@ -4,28 +4,33 @@ end
 
 class Game
 	def initialize
-		@p1 = Player.new("Player 1",Input.new(2))
-		@out = Output.new
+		@player = Player.new("Player 1",Input.new(2))
+		@output = Output.new
+
+		$RAND = Random.new(261457850940079854015708119209250997973)
+		puts $RAND.seed
+
+		@worldCount = $RAND.rand(10)+1
+
+		$SPACE = Array.new(11){Array.new(21,-1)}
+		for i in 1..@worldCount
+			$WORLDS.push(World.new("World #{i}"))
+		end
 	end
 
 	def run
-		@out.start
+		@output.start
 
 		while true
-			@out.print_view(@p1)
-			@p1.move
+			@output.print_view(@player)
+			@player.move
 		end
 	end
 
 	def quit
-		@out.overwrite($WINDOWSIZE,true)
+		@output.overwrite($WINDOWSIZE,true)
 		exit 0
 	end
-end
-
-$SPACE = Array.new(11){Array.new(21,-1)}
-for i in 1..4
-	$WORLDS.push(World.new("World #{i}"))
 end
 
 $GAME = Game.new
