@@ -1,4 +1,6 @@
-Dir["assets/*"].each do |file|
+$directory = Dir["../resources/alienExterminator/assets/*"]
+
+$directory.each do |file|
 	require_relative file
 end
 
@@ -40,7 +42,7 @@ class Game
 	end
 
 	def quit
-		@output.overwrite($WINDOWSIZE,true)
+		@output.overwrite($WINDOWSIZE+1,true)
 		exit 0
 	end
 end

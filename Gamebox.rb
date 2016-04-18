@@ -1,5 +1,11 @@
 require 'io/console'
 
+gamesDir = Dir["games/*"]
+$games = []
+gamesDir.each do |gameFile|
+  $games << File.basename(gameFile,".rb")
+end
+
 #reads single input from terminal
 def read_char
 	STDIN.echo = false
@@ -27,66 +33,51 @@ def overwrite(lines, delete)
   end
 end
 
-def menu(int)
-  $linesPrinted = 10
-  totalOptions = 7
-  puts "~~GAMEBOX~~"
-  puts ""
-  if int==1 then print "*" else print " " end            
-  puts " Play 2048"
-  if int==2 then print "*" else print " " end
-  puts " Play Dots"
-  if int==3 then print "*" else print " " end 
-  puts " Play Block Man"
-  if int==4 then print "*" else print " " end
-  puts " Play PEGS"
-  if int==5 then print "*" else print " " end 
-  puts " Play TicTacToe"
-  if int==6 then print "*" else print " " end
-  puts " Play Guess The Word"
-  puts ""
-  if int==0 then print "*" else print " " end
-  puts " Quit"
-  case read_char
-  when "\e[C" #right character
-    overwrite($linesPrinted, false)
-    menu((int+1)%totalOptions)
-  when "\e[B" #down character
-    overwrite($linesPrinted, false)
-    menu((int+1)%totalOptions)
-  when "\e[D" #left character
-    overwrite($linesPrinted, false)
-    menu((int-1)%totalOptions)
-  when "\e[A" #up character
-    overwrite($linesPrinted, false)
-    menu((int-1)%totalOptions)
-  when "\r"
-    overwrite($linesPrinted, true)
-    case int
-    when 1
-      system "ruby games/2048.rb"
-    when 2
-      system "ruby games/dots.rb"
-    when 3
-      system "ruby games/blockMan.rb"
-    when 4
-      system "ruby games/pegs.rb"
-    when 5
-      system "ruby games/TicTacToe.rb"
-    when 6
-      system "ruby games/guessTheWord.rb"
-    when 0
-      #system "clear"
-      exit 0
+def menuTest
+  int = 0
+  totalOptions = $games.length + 1 #all games plus quit
+  $linesPrinted = totalOptions + 3 #2 lines for header and 1 for space before quit
+  while true
+    #Print menu
+    puts "~~GAMEBOX~~"
+    puts
+    $games.each_with_index do |game,index|
+      if int == index then print "*" else print " " end
+      puts " Play #{game}"
     end
-  when "\u0003"
-    overwrite($linesPrinted, true)#system "clear"
+    puts
+    if int == totalOptions - 1 then print "*" else print " " end
+    puts " Quit"
+
+    #Get input
+    case read_char
+    when "\e[C" #right character
+      overwrite($linesPrinted, false)
+      int = (int+1)%totalOptions
+    when "\e[B" #down character
+      overwrite($linesPrinted, false)
+      int = (int+1)%totalOptions
+    when "\e[D" #left character
+      overwrite($linesPrinted, false)
+      int = (int-1)%totalOptions
+    when "\e[A" #up character
+      overwrite($linesPrinted, false)
+      int = (int-1)%totalOptions
+    when "\r"
+      overwrite($linesPrinted, true)
+      if int == totalOptions - 1
+        exit 0
+      else
+        system "cd games && ruby #{$games[int]}.rb"
+      end
+    when "\u0003"
+    overwrite($linesPrinted, true)
     exit 0
-  else
-    overwrite($linesPrinted, false)
+    else
+      overwrite($linesPrinted, false)
+    end
   end
-  menu(int)
 end
-#puts "\n\n\n\n\n\n\n\n\n\n" #10 times
-menu(1)
+
+menuTest
 

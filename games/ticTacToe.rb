@@ -76,7 +76,7 @@ def move(game)
   when "\r"
     place(game)
   when "\u0003"
-    overwrite($linesPrinted,false)
+    overwrite($linesPrinted,true)
     exit 0
   else move(game)
   end
