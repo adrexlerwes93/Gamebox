@@ -3,12 +3,14 @@ Dir["assets/*"].each do |file|
 end
 
 class Game
-	def initialize
+	def initialize(seed)
 		@player = Player.new("Player 1",Input.new(2))
 		@output = Output.new
-
-		$RAND = Random.new(261457850940079854015708119209250997973)
-		puts $RAND.seed
+		if seed == nil
+			$RAND = Random.new
+		else
+			$RAND = Random.new(seed.to_i)
+		end
 
 		@worldCount = $RAND.rand(10)+1
 
@@ -18,13 +20,23 @@ class Game
 		end
 	end
 
-	def run
-		@output.start
+	def addMonsters(count)
+		monsters = 0
+		while monsters < count
+			$WORLDS[$RAND.rand(@worldCount)].addMonster
+			monsters+=1
+		end
+	end
 
-		while true
+	def run
+		puts "SEED: #{$RAND.seed}"
+		@output.start
+		while @player.is_alive
 			@output.print_view(@player)
 			@player.move
+			@player.update
 		end
+		@output.print_death(@player)
 	end
 
 	def quit
@@ -32,6 +44,8 @@ class Game
 		exit 0
 	end
 end
-
-$GAME = Game.new
+$GAME = Game.new(ARGV[0])
+$MONSTER_COUNT = 100
+$SCORE = 0
+$GAME.addMonsters($MONSTER_COUNT)
 $GAME.run

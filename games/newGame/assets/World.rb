@@ -1,6 +1,8 @@
 class World
 	$WORLDS = []
 
+	@@colors = ["red","green","brown","blue","magenta","cyan","gray","yellow"]
+
 	# def initialize(id, name, seed)
 	# 	@id = id
 	# 	@name = name
@@ -17,19 +19,25 @@ class World
 		@id = $WORLDS.length
 		@x = $RAND.rand(21)
 		@y = $RAND.rand(11)
-		@planet = $RAND.rand(9)
+		@color = @@colors[$RAND.rand(8)]
 		@maps = [$maps[-2]]
-		$SPACE[@y][@x] = @planet
+		$SPACE[@y][@x] = @id
 		@mg = MapGenerator.new
 		for m in 3..6
-			@maps.push(@mg.generate(-m,20,m-3,20))
+			@maps.push(@mg.generate(-m,20,m-3,100))
 		end
+	end
 
+	def addMonster
+		map = @maps[$RAND.rand(@maps.length-1)+1]
+		monster = Monster.new(map)
+		map.get_monsters.push(monster)
 	end
 
 	def get_x;		@x 		end
 	def get_y;		@y 		end
 	def get_maps;	@maps 	end
+	def get_color;	@color 	end
 
 	def new_random_world(name)
 		id = $WORLDS.length
