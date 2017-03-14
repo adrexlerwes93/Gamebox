@@ -33,63 +33,71 @@ class Player
 	end
 
 	def move
-		if @onWorld
-			x=@x
-			y=@y
-			inp=@input.read_char
-			if inp == @input.enter
-				if @map.isOpenDoor(x,y)
-					if @map.get_id_at(x,y) == -1
-						@onWorld=false
+		valid_input = false
+		while not valid_input
+			valid_input = true
+			if @onWorld
+				x=@x
+				y=@y
+				inp=@input.read_char
+				if inp == @input.enter
+					if @map.isOpenDoor(x,y)
+						if @map.get_id_at(x,y) == -1
+							@onWorld=false
+						else
+							new_id = @map.get_id_at(x,y)
+							prev_id = @map.get_id
+							@map = $WORLDS[@world].get_maps[(0-new_id)-2]
+							@x, @y = @map.find_portal(prev_id)
+						end
 					else
-						new_id = @map.get_id_at(x,y)
-						prev_id = @map.get_id
-						@map = $WORLDS[@world].get_maps[(0-new_id)-2]
-						@x, @y = @map.find_portal(prev_id)
+						attack
 					end
 				else
-					attack
-				end
-			else
-				case inp
-				when @input.up
-					y-=1
-				when @input.left
-					x-=1
-				when @input.down
-					y+=1
-				when @input.right
-					x+=1
-				when @input.exit
-					$GAME.quit
-				when @input.debug_quit
-					exit 0
-				end
+					case inp
+					when @input.up
+						y-=1
+					when @input.left
+						x-=1
+					when @input.down
+						y+=1
+					when @input.right
+						x+=1
+					when @input.exit
+						$GAME.quit
+					when @input.debug_quit
+						exit 0
+					else
+						valid_input = false
+					end
 
-				if @map.isWalkable(x,y)
-					@x=x
-					@y=y
+					if @map.isWalkable(x,y)
+						@x=x
+						@y=y
+					end
 				end
-			end
-		else
-			inp=@input.read_char
-			if inp == @input.enter
-				@onWorld = true
-				@map, @x, @y = $WORLDS[@world].land
 			else
-				case inp
-				when @input.up
-					@world = (@world-1) % $WORLDS.length
-				when @input.left
-					@world = (@world-1) % $WORLDS.length
-				when @input.down
-					@world = (@world+1) % $WORLDS.length
-				when @input.right
-					@world = (@world+1) % $WORLDS.length
-				when @input.exit
-					$GAME.quit
-				when @input.debug_quit
-					exit 0
+				inp=@input.read_char
+				if inp == @input.enter
+					@onWorld = true
+					@map, @x, @y = $WORLDS[@world].land
+				else
+					case inp
+					when @input.up
+						@world = (@world-1) % $WORLDS.length
+					when @input.left
+						@world = (@world-1) % $WORLDS.length
+					when @input.down
+						@world = (@world+1) % $WORLDS.length
+					when @input.right
+						@world = (@world+1) % $WORLDS.length
+					when @input.exit
+						$GAME.quit
+					when @input.debug_quit
+						exit 0
+					else
+						valid_input = false
+					end
 				end
 			end
 		end
