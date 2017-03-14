@@ -1,4 +1,4 @@
-require_relative "string"
+require_relative "String"
 require_relative "MapGenerator"
 class Map
 	def initialize(id,border,array)
