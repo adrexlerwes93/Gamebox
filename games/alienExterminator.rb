@@ -1,10 +1,5 @@
 $directory = Dir["../resources/alienExterminator/assets/*"]
-puts "Directory path..."
-puts Dir["../*"]
-puts Dir["../resources/*"]
-puts Dir["../alienExterminator/*"]
 $directory.each do |file|
-	puts file
 	require_relative file
 end
 

@@ -71,7 +71,7 @@ end
 def addVal(board)
 	#returns a 2 or a 4 randomly
 	def twoOrFour()
-		if Random.rand(4) == 1
+		if Random.rand(5) == 1
 			return 4
 		else 
 			return 2
