@@ -3,7 +3,7 @@ def timeEverySecond
 		oldTime = Time.now.strftime("%S")
 		puts Time.now.strftime("%I:%M %S %p")
 		until Time.now.strftime("%S") != oldTime
-			wait 30
+			sleep(0.1)
 		end
 		system "printf \"\\033[1A\""
       	system "printf \"\\033[K\""
