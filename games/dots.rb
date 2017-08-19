@@ -134,7 +134,7 @@ def createGame
           [0,0,0,0,0,0,0,0,0,0]
   (0..9).each do |i|
     (0..9).each do |j|
-      board[i][j] = Random.rand(5) + 1
+      board[i][j] = Random.rand(6) + 1
     end
   end
   cursor = [0,0]
@@ -143,17 +143,20 @@ def createGame
 end
 
 def printChar(char, color)
+  char = char
   case color
   when 'GRAY'
-    print char.bg_light_gray
+    print char.black.bg_light_gray
   when 'GREEN'
-    print char.bg_green
+    print char.yellow.bg_green
   when 'YELLOW'
-    print char.bg_yellow
+    print char.green.bg_yellow
   when 'CYAN'
-    print char.bg_cyan
+    print char.magenta.bg_cyan
   when 'MAGENTA'
-    print char.bg_magenta
+    print char.cyan.bg_magenta
+  when 'BLACK'
+    print char.white.bg_black
   else
     print char
   end
@@ -183,6 +186,9 @@ def printBoard(game)
       when 5
         char = "#"
         color = 'MAGENTA'
+      when 6
+        char = "~"
+        color = "BLACK"
       end
       if cursor[0] == i && cursor[1] == j && inSelection(selected,i,j)
         printChar("{", color)
@@ -279,6 +285,9 @@ def moveSquare(game)
   when "\r"
     #return key
     return deleteAndDrop(game)
+  when " "
+    #Oren's return key
+    return deleteAndDrop(game)
   else 
     overwrite($linesPrinted, true)
     exit 0
@@ -362,6 +371,12 @@ def moveSelection(game)
       return deleteAndDrop(game)
     end
     return [board,cursor,[],0,game[4],game[5]]
+  when " "
+    #Oren's return key
+    if selected.size > 1
+      return deleteAndDrop(game)
+    end
+    return [board,cursor,[],0,game[4],game[5]]
   else
     overwrite($linesPrinted, true)  
     exit 0
@@ -402,6 +417,10 @@ def moveCursor(game)
     end
   when "\r"
     #return key
+    selected << cursor
+    return [board,cursor,selected,0,game[4],game[5]]
+  when " "
+    #Oren's return key
     selected << cursor
     return [board,cursor,selected,0,game[4],game[5]]
   else
@@ -489,7 +508,7 @@ end
 def fillTop(game)
   (0..9).each do |j|
     if game[0][0][j] == 0
-      game[0][0][j] = Random.rand(5)+1
+      game[0][0][j] = Random.rand(6)+1
     end
   end
   return game
